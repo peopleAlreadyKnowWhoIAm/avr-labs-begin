@@ -31,7 +31,7 @@ TARGET = main
 
 OBJS = $(patsubst %.c, %.o, $(SOURCES))
 
-.PHONY: all clean
+.PHONY: all clean flash
 
 all: $(TARGET).hex
 
@@ -47,3 +47,6 @@ $(TARGET).elf: $(OBJS)
 
 clean:
 	rm -f $(OBJS) $(TARGET).hex $(TARGET).elf
+
+flash:
+	avrdude -c arduino -P /dev/ttyUSB0 -p $(DEVICE) -U flash:w:$(TARGET).hex
