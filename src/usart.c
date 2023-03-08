@@ -1,14 +1,14 @@
 #include "usart.h"
 
 #include <avr/interrupt.h>
+typedef struct {
+   volatile char buf[128];
+   volatile uint8_t read;
+   volatile uint8_t write;
+} CircBuffer;
 
-static uint8_t rbuf[128];
-static uint8_t rwpointer = 0;
-static uint8_t rrpointer =0;
-
-static volatile char* wpointer = 0;
-static volatile char* wpointer_end = 0;
-
+CircBuffer tx = {.read = 0,.write = 0};
+CircBuffer rx = {.read = 0, .write = 0};
 
 
 inline uint8_t incptr(uint8_t ptr) {
@@ -33,32 +33,35 @@ void usart_init() {
 
 
 ISR(USART_RX_vect){
-   // rbuf[rwpointer] = UDR0;
-   // rwpointer = incptr(rwpointer);
-   UDR0 = UDR0;
+   rx.buf[rx.write] = UDR0;
+   rx.write = incptr(rx.write);
 }
 
 void write_byte(){
-   if(wpointer < wpointer_end){
-      UDR0 = *wpointer;
-      wpointer++;
+   if(tx.read != tx.write){
+      UDR0 = tx.buf[tx.read];
+      tx.read = incptr(tx.read);
    }
 }
 
 uint8_t wre(char* data, uint8_t length){
-   if (!(UCSR0A & (1<<UDRE0))){
-      return -1;
-   }
-   wpointer = data;
-   wpointer_end = wpointer+length;
+   uint8_t buf = tx.write;
+   for(uint8_t i = 0; i < length; i++){
+      tx.buf[tx.write] = data[i];
+      tx.write = incptr(tx.write);
+      // if(tx.write == tx.read){
+      //    tx.write = buf;
+      //    return -1;
+      // }
+   };
    write_byte();
    return length;
 }
 
 char read(){
-   if( rrpointer != rwpointer){
-      char tmp = rbuf[rrpointer];
-      rrpointer = incptr(rrpointer);
+   if( rx.write != rx.read){
+      char tmp = rx.buf[rx.read];
+      rx.read = incptr(rx.read);
       return tmp;
    }
    return -1;

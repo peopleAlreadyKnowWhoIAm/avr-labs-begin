@@ -24,10 +24,10 @@ void setup();
 
 int main() {
     setup();
-    if(wre("alpha", 5) != -1){
+    if(wre("alpha", 5) == 5){
         PORTB |= 1<<PB5;
     }
-    volatile char buf[10];
+    char buf[10];
     uint8_t len = 0;
     while(1){
         char tmp = read();

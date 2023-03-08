@@ -51,5 +51,5 @@ $(TARGET).elf: $(OBJS)
 clean:
 	rm -f $(OBJS) $(TARGET).hex $(TARGET).elf
 
-flash:
+flash: $(TARGET).hex
 	avrdude -c arduino -P /dev/ttyUSB0 -p $(DEVICE) -U flash:w:$(TARGET).hex
