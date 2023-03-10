@@ -28,6 +28,7 @@ ASFLAGS += -Wall
 CFLAGS += -c
 CFLAGS += -Os
 CFLAGS += -I $(INC)
+CFLAGS += --param=min-pagesize=0
 
 TARGET = main
 

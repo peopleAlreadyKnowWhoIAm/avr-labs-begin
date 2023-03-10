@@ -12,7 +12,7 @@
 
 void usart_init();
 
-uint8_t wre(char* data, uint8_t length);
+uint8_t write(char* data, uint8_t length);
 
 char read();
 

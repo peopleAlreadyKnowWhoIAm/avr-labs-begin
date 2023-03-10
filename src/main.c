@@ -24,7 +24,7 @@ void setup();
 
 int main() {
     setup();
-    if(wre("alpha", 5) == 5){
+    if(write("alpha", 5) == 5){
         PORTB |= 1<<PB5;
     }
     char buf[10];
@@ -36,7 +36,7 @@ int main() {
             len++;
         }
 
-        if( len > 5 && wre(buf, len) != -1){
+        if( len > 5 && write(buf, len) != -1){
             
             len = 0;
         }
