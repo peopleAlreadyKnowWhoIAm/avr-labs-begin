@@ -1,6 +1,9 @@
 DEVICE = atmega328p # From https://gcc.gnu.org/onlinedocs/gcc/AVR-Options.html
 
 SOURCES += src/main.c
+SOURCES += src/usart.c
+
+INC += inc
 
 FREQUENCY = 16000000
 
@@ -24,7 +27,8 @@ ASFLAGS += -Wall
 # Compiler flags
 CFLAGS += -c
 CFLAGS += -Os
-CFLAGS += -D F_CPU=$(FREQUENCY)
+CFLAGS += -I $(INC)
+CFLAGS += --param=min-pagesize=0
 
 TARGET = main
 
@@ -48,5 +52,5 @@ $(TARGET).elf: $(OBJS)
 clean:
 	rm -f $(OBJS) $(TARGET).hex $(TARGET).elf
 
-flash:
+flash: $(TARGET).hex
 	avrdude -c arduino -P /dev/ttyUSB0 -p $(DEVICE) -U flash:w:$(TARGET).hex
