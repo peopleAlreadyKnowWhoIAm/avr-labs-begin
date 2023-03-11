@@ -12,8 +12,8 @@
 
 void usart_init();
 
-uint8_t write(char* data, uint8_t length);
+int8_t serial_write_char(const char data);
 
-char read();
+char serial_read_char();
 
 #endif
